@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hikari's Room ☁️💛</title>
+    <style>
+        :root {
+            --bg-color: #f2f9fb;
+            --baby-blue-main: #8ccbe8;
+            --baby-blue-light: rgba(140, 203, 232, 0.15);
+            --baby-blue-border: rgba(140, 203, 232, 0.35);
+            --baby-blue-hover: #72b9dc;
+            --baby-blue-dark: #3b629b;
+            --goose-yellow-main: #fff2b2;
+            --goose-yellow-light: rgba(255, 242, 178, 0.3);
+            --goose-yellow-border: rgba(240, 210, 100, 0.6);
+            --goose-yellow-text: #7a6320;
+            --text-color: #486581;
+            --text-sub: rgba(72, 101, 129, 0.7);
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(140, 203, 232, 0.25);
+            --shadow-yellow: 0 8px 20px rgba(255, 242, 178, 0.45);
+            --days-card-bg: linear-gradient(135deg, rgba(140, 203, 232, 0.25) 0%, rgba(255, 242, 178, 0.35) 100%);
+        }
+
+        .admin-only {
+            display: none !important;
+        }
+
+        body.is-admin .admin-only {
+            display: inline-flex !important;
+        }
+
+        body.is-admin div.admin-only {
+            display: flex !important;
+        }
+
+        .admin-badge {
+            background-color: var(--goose-yellow-main);
+            color: var(--goose-yellow-text);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: 1px solid var(--goose-yellow-border);
+            display: none;
+        }
+
+        body.is-admin .admin-badge {
+            display: inline-block;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Hiragino Kaku Gothic ProN', 'Nunito', 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: var(--bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 4rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- 導覽列 (Navbar) --- */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 5%;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--baby-blue-main);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo span {
+            background-color: var(--goose-yellow-main);
+            color: var(--goose-yellow-text);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--baby-blue-main);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background-color: var(--goose-yellow-main);
+            color: var(--goose-yellow-text);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid var(--goose-yellow-border);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: var(--shadow-yellow);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-theme-toggle {
+            background-color: var(--baby-blue-light);
+            color: var(--baby-blue-dark);
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        .btn-theme-toggle:hover {
+            background-color: var(--baby-blue-main);
+            color: var(--white);
+        }
+
+        .btn-admin-login {
+            background-color: var(--baby-blue-light);
+            color: var(--baby-blue-dark);
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        /* --- 個人簡介區塊 (Profile) --- */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1rem 1.5rem;
+            text-align: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.2rem;
+        }
+
+        .avatar-container::before,
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            width: 38px;
+            height: 38px;
+            background-color: var(--baby-blue-light);
+            border: 3px solid var(--white);
+            border-radius: 50%;
+            z-index: 0;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s;
+        }
+
+        .avatar-container::before { left: 2px; }
+        .avatar-container::after { right: 2px; }
+
+        .avatar {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid var(--white);
+            box-shadow: var(--shadow);
+            object-fit: cover;
+            background-color: var(--baby-blue-light);
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            z-index: 2;
+            background: var(--goose-yellow-main);
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .profile-card {
+            background: var(--white);
+            padding: 1.8rem 1.5rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            max-width: 620px;
+            width: 92%;
+            border: 2px dashed var(--baby-blue-main);
+            position: relative;
+        }
+
+        .profile-card::before {
+            content: "☁️ 🧸 ✨ 💫";
+            position: absolute;
+            top: -14px;
+            left: 20px;
+            font-size: 0.95rem;
+            background: var(--white);
+            padding: 0 6px;
+            border-radius: 10px;
+        }
+
+        .btn-edit-overlay {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: var(--baby-blue-light);
+            color: var(--baby-blue-dark);
+            border: 1px solid var(--baby-blue-border);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit-overlay:hover {
+            background-color: var(--baby-blue-main);
+            color: var(--white);
+        }
+
+        .profile-card h1 {
+            font-size: 1.45rem;
+            color: var(--baby-blue-main);
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-card h2 {
+            font-size: 0.88rem;
+            color: var(--goose-yellow-text);
+            font-weight: normal;
+            margin-bottom: 0.8rem;
+            background-color: var(--goose-yellow-light);
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            border: 1px solid var(--goose-yellow-border);
+        }
+
+        .profile-card p {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-bottom: 0.8rem;
+            white-space: pre-line;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+
+        .tag {
+            background-color: var(--baby-blue-light);
+            color: var(--baby-blue-dark);
+            border: 1px solid var(--baby-blue-border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+
+        /* --- 創作記錄區 (Works) --- */
+        .works-section {
+            padding: 2rem 4%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--baby-blue-main);
+            position: relative;
+            text-align: center;
+            white-space: pre-wrap;
+        }
+
+        .section-title::after {
+            content: "✨☁️✨";
+            display: block;
+            font-size: 0.8rem;
+            margin-top: 0.1rem;
+        }
+
+        .filter-controls-container {
+            width: 100%;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            box-shadow: var(--shadow);
+            margin-top: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        .filter-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .category-buttons {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-filter {
+            background-color: var(--bg-color);
+            border: 1px solid var(--baby-blue-border);
+            color: var(--text-sub);
+            padding: 0.35rem 0.85rem;
+            border-radius: 16px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-filter.active, .btn-filter:hover {
+            background-color: var(--baby-blue-main);
+            color: var(--white);
+            border-color: var(--baby-blue-main);
+            font-weight: bold;
+        }
+
+        .view-mode-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-color);
+            padding: 3px;
+            border-radius: 14px;
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        .btn-view-mode {
+            background: none;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-view-mode.active {
+            background: var(--white);
+            color: var(--text-color);
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .filter-row-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.45rem 0.9rem 0.45rem 2.2rem;
+            border: 1.5px solid var(--baby-blue-border);
+            border-radius: 16px;
+            font-size: 0.85rem;
+            outline: none;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--baby-blue-main);
+            background: var(--white);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .sort-select {
+            padding: 0.45rem 0.8rem;
+            border: 1.5px solid var(--baby-blue-border);
+            border-radius: 16px;
+            font-size: 0.82rem;
+            outline: none;
+            background: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .works-stats {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            padding: 0 0.4rem;
+        }
+
+        /* --- 作品呈現模式 --- */
+        .grid {
+            display: grid;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+
+        .grid.mode-card {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        .mode-card .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.3rem;
+            box-shadow: var(--shadow);
+            transition: all 0.25s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--baby-blue-border);
+            cursor: pointer;
+        }
+
+        .mode-card .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--baby-blue-main);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .mode-card .card-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            background-color: var(--baby-blue-light);
+        }
+
+        .mode-card p.preview-text {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 0.8rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+
+        .grid.mode-compact {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .mode-compact .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 0.8rem;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid var(--baby-blue-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mode-compact .card:hover {
+            border-color: var(--baby-blue-main);
+            transform: translateY(-2px);
+        }
+
+        .mode-compact .card-img {
+            width: 100%;
+            height: 95px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-compact h3 {
+            font-size: 0.92rem;
+            line-height: 1.35;
+            margin-bottom: 0.3rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .mode-compact p.preview-text {
+            display: none;
+        }
+
+        .grid.mode-list {
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+        }
+
+        .mode-list .card {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--baby-blue-border);
+            transition: all 0.2s;
+        }
+
+        .mode-list .card:hover {
+            border-color: var(--baby-blue-main);
+            background: var(--baby-blue-light);
+        }
+
+        .mode-list .list-left-content {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .mode-list .card-img {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .mode-list .list-text-wrapper {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .mode-list h3 {
+            font-size: 0.92rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mode-list p.preview-text {
+            display: none;
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            background-color: var(--goose-yellow-light);
+            color: var(--goose-yellow-text);
+            border: 1px solid var(--goose-yellow-border);
+            font-size: 0.75rem;
+            padding: 0.15rem 0.55rem;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.08rem;
+            margin-bottom: 0.4rem;
+            color: var(--text-color);
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed var(--baby-blue-border);
+            padding-top: 0.6rem;
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            margin-top: auto;
+        }
+
+        .read-more-hint {
+            color: var(--baby-blue-main);
+            font-weight: bold;
+            font-size: 0.78rem;
+        }
+
+        .btn-card-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-card-edit { color: #3b82f6; }
+        .btn-card-edit:hover { background-color: var(--baby-blue-light); }
+        .btn-card-delete { color: #f87171; }
+        .btn-card-delete:hover { background-color: #fee2e2; }
+
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 2.5rem 1rem;
+            background: var(--white);
+            border-radius: 20px;
+            color: var(--text-sub);
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+        }
+
+        /* --- 社群連結區塊 --- */
+        .contact-section {
+            padding: 2rem 1rem 3rem;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: var(--white);
+            padding: 1.8rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--goose-yellow-light);
+            text-align: center;
+            position: relative;
+        }
+
+        .contact-card p.contact-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 1.2rem;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--baby-blue-light);
+            padding: 0.75rem 1.1rem;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.25s ease;
+            border: 1.5px solid var(--baby-blue-border);
+        }
+
+        .social-item:hover {
+            background-color: var(--white);
+            border-color: var(--baby-blue-main);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .social-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .social-handle {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            background: var(--white);
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        /* --- Modal 彈窗樣式 --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: var(--white);
+            padding: 1.8rem;
+            border-radius: 24px;
+            width: 92%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            border: 3px solid var(--baby-blue-border);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.15rem;
+            color: var(--baby-blue-main);
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-close:hover { color: #ef4444; }
+
+        .detail-modal-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        .detail-title {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px dashed var(--baby-blue-border);
+        }
+
+        .detail-content-box {
+            background-color: var(--baby-blue-light);
+            border-radius: 16px;
+            padding: 1.1rem 1.2rem;
+            font-size: 0.92rem;
+            color: var(--text-color);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            border: 1px solid var(--baby-blue-border);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1.5px solid var(--baby-blue-border);
+            border-radius: 14px;
+            outline: none;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 0.88rem;
+            transition: all 0.25s ease;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--baby-blue-main);
+            background-color: var(--white);
+            box-shadow: 0 0 0 3px var(--baby-blue-light);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--baby-blue-main);
+            color: var(--white);
+            border: none;
+            border-radius: 20px;
+            font-size: 0.92rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.25s ease;
+        }
+
+        .submit-btn:hover { background-color: var(--baby-blue-hover); }
+
+        .file-upload-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .btn-file-label {
+            background-color: var(--baby-blue-light);
+            color: var(--baby-blue-dark);
+            border: 1px solid var(--baby-blue-border);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .file-input-hidden { display: none !important; }
+
+        /* --- 紀念日 / 天數紀錄卡片樣式 --- */
+        .days-counter-card {
+            margin-top: 1.2rem;
+            background: var(--days-card-bg);
+            border-radius: 20px;
+            padding: 1.3rem 1rem;
+            border: 1.5px dashed var(--baby-blue-border);
+            position: relative;
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.7);
+            transition: background 0.3s ease;
+        }
+
+        .days-title {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .days-display-box {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+            margin: 0.2rem 0;
+        }
+
+        .days-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--baby-blue-dark);
+            font-family: 'Nunito', sans-serif;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .days-unit {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--goose-yellow-text);
+        }
+
+        .days-timer-live {
+            font-size: 0.82rem;
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .days-timer-badge {
+            background: rgba(255, 255, 255, 0.75);
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--baby-blue-border);
+            font-family: 'Nunito', monospace;
+            box-shadow: 0 2px 6px rgba(140, 203, 232, 0.15);
+        }
+
+        .days-subnote {
+            font-size: 0.8rem;
+            color: var(--text-color);
+            background: rgba(255, 255, 255, 0.7);
+            display: inline-block;
+            padding: 0.25rem 0.8rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        .cloud-sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            background: var(--baby-blue-light);
+            color: var(--baby-blue-dark);
+            padding: 3px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--baby-blue-border);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            ☁️ Hikari's Room 🧸 <span>くまちゃん ✕ 徹くん ☁️✨</span>
+            <span class="admin-badge">👑 管理員</span>
+            <span class="cloud-sync-badge" id="syncStatusBadge">⚡ 雲端連線中</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#characters">Characters</a></li>
+            <li><a href="#works">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="btnAdminAuth" class="btn-action btn-admin-login" onclick="toggleAdminLogin()">🔑 管理員登入</button>
+            <button class="btn-action btn-theme-toggle admin-only" onclick="openThemeModal()">🎨 調色盤</button>
+            <button class="btn-action admin-only" onclick="openWorkModal()">+ 新增創作</button>
+        </div>
+    </nav>
+
+    <section id="about" class="profile-section">
+        <div class="avatar-container">
+            <img id="displayAvatar" class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="熊田光理">
+            <div class="avatar-badge" id="displayAvatarBadge">🧸</div>
+        </div>
+        <div class="profile-card">
+            <button class="btn-edit-overlay admin-only" onclick="openProfileModal()">✏️ 編輯個人資料</button>
+            <h1 id="displayName">熊田光理 (Kumada Hikari)</h1>
+            <h2 id="displaySubtitle">光理 (くまちゃん) ✕ 及川徹 的日常記錄 🧸💛</h2>
+            <p id="displayBio">歡迎來到 Hikari's Room！這裡記錄著我與阿徹（及川徹）的各種夢向小說、委託繪圖與小熊日常故事 ✨</p>
+            <div class="tags" id="displayTags">
+                <span class="tag">#夢女子</span>
+                <span class="tag">#及川徹</span>
+                <span class="tag">#小熊與星星 🧸✨</span>
+                <span class="tag">#寶寶藍與奶油黃</span>
+            </div>
+
+            <div class="days-counter-card" id="daysCounterCard">
+                <button class="btn-edit-overlay admin-only" onclick="openDaysModal()">✏️ 編輯天數</button>
+                <div class="days-title" id="displayDaysTitle">☁️ 與阿徹牽手漫步 💛</div>
+                
+                <div class="days-display-box">
+                    <span class="days-number" id="displayDaysCount">0</span>
+                    <span class="days-unit">DAYS</span>
+                </div>
+
+                <div class="days-timer-live">
+                    <span class="days-timer-badge" id="liveClockDisplay">0 天 00 小時 00 分 00 秒</span>
+                </div>
+
+                <div class="days-subnote" id="displayDaysNote">每一天都有你在，就是最好的時光 ✨</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="characters" class="works-section">
+        <div class="section-header">
+            <h2 class="section-title" id="displayCharSectionTitle">Character Profiles ☁️🧸</h2>
+            <p id="displayCharSectionSubtitle" style="font-size: 0.88rem; color: var(--text-sub); margin-top: 0.3rem;">光理與阿徹的角色檔案與基本設定（點擊卡片可查看完整介紹 ✨）</p>
+            <div class="admin-only" style="margin-top: 0.8rem; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                <button class="btn-action" onclick="openCharSettingsModal()" style="font-size: 0.8rem; padding: 0.4rem 0.9rem;">✏️ 編輯區塊標題</button>
+                <button class="btn-action" onclick="openCharModal()" style="font-size: 0.8rem; padding: 0.4rem 0.9rem;">+ 新增角色檔案</button>
+            </div>
+        </div>
+        <div class="grid mode-card" id="charactersGrid" style="grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));"></div>
+    </section>
+
+    <section id="works" class="works-section">
+        <div class="section-header">
+            <h2 class="section-title">Memory Gallery ☁️🧸</h2>
+            
+            <div class="filter-controls-container">
+                <div class="filter-row-top">
+                    <div class="category-buttons">
+                        <button class="btn-filter active" onclick="filterCategory('all', event)">全部</button>
+                        <button class="btn-filter" onclick="filterCategory('短文', event)">📖 短文</button>
+                        <button class="btn-filter" onclick="filterCategory('夢繪', event)">🎨 夢繪</button>
+                        <button class="btn-filter" onclick="filterCategory('委託', event)">🤝 委託</button>
+                        <button class="btn-filter" onclick="filterCategory('設定', event)">💭 設定</button>
+                    </div>
+
+                    <div class="view-mode-group">
+                        <button class="btn-view-mode active" id="vm-card" onclick="setViewMode('mode-card')">🖼️ 圖卡</button>
+                        <button class="btn-view-mode" id="vm-compact" onclick="setViewMode('mode-compact')">📱 密集</button>
+                        <button class="btn-view-mode" id="vm-list" onclick="setViewMode('mode-list')">📜 條列</button>
+                    </div>
+                </div>
+
+                <div class="filter-row-bottom">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="搜尋作品標題或內容..." oninput="handleSearchInput(event)">
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <select id="sortSelect" class="sort-select" onchange="handleSortChange(event)">
+                            <option value="newest">📅 最新優先</option>
+                            <option value="oldest">📅 最舊優先</option>
+                        </select>
+                        <button class="btn-action admin-only" onclick="openWorkModal()" style="font-size:0.8rem; padding:0.35rem 0.7rem;">+ 新增</button>
+                    </div>
+                </div>
+
+                <div class="works-stats" id="worksStats">正在載入作品數據...</div>
+            </div>
+        </div>
+
+        <div class="grid mode-card" id="worksGrid"></div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="section-header">
+            <h2 class="section-title">Contact & Social ☁️✨</h2>
+        </div>
+        <div class="contact-card">
+            <button class="btn-edit-overlay admin-only" onclick="openSocialModal()">✏️ 編輯社群資料</button>
+            <p class="contact-desc" id="displaySocialDesc">歡迎透過以下平台與我交流夢向、查看最新近況或私訊討論！🧸💛</p>
+            <div class="social-links" id="socialLinksContainer"></div>
+        </div>
+    </section>
+
+    <!-- 管理員登入 Modal -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🔑 管理員身份驗證 🧸</h3>
+                <button class="btn-close" onclick="closeModal('adminModal')">&times;</button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label for="adminPassword">請輸入管理員密碼</label>
+                    <input type="password" id="adminPassword" placeholder="請輸入密碼..." required>
+                </div>
+                <p id="adminErrorMsg" style="color: #ef4444; font-size: 0.85rem; display: none; margin-bottom: 1rem;">❌ 密碼錯誤，請再試一次！</p>
+                <button type="submit" class="submit-btn">解鎖編輯權限 👑</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 調色盤 Modal -->
+    <div class="modal-overlay" id="themeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🎨 網頁顏色與背景自訂</h3>
+                <button class="btn-close" onclick="closeModal('themeModal')">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label>✨ 推薦配色方案</label>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 6px;">
+                    <button type="button" class="btn-filter" style="border-left: 6px solid #8ccbe8; text-align: left;" onclick="applyPresetTheme('babyblue')">☁️ 寶寶藍 (預設)</button>
+                    <button type="button" class="btn-filter" style="border-left: 6px solid #f4a261; text-align: left;" onclick="applyPresetTheme('sakura')">🌸 櫻花粉嫩</button>
+                    <button type="button" class="btn-filter" style="border-left: 6px solid #b8c0ff; text-align: left;" onclick="applyPresetTheme('lavender')">🍇 薰衣草紫</button>
+                    <button type="button" class="btn-filter" style="border-left: 6px solid #ddb892; text-align: left;" onclick="applyPresetTheme('milktea')">🧸 暖心奶茶</button>
+                    <button type="button" class="btn-filter" style="border-left: 6px solid #52b788; text-align: left;" onclick="applyPresetTheme('mint')">🍃 清涼薄荷</button>
+                    <button type="button" class="btn-filter" style="border-left: 6px solid #4a5568; text-align: left;" onclick="applyPresetTheme('midnight')">🌙 深海夜空</button>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem; margin-top: 1rem;">
+                <div class="form-group">
+                    <label>主色調 (主題色)</label>
+                    <input type="color" id="pickerMain" value="#8ccbe8" onchange="updateThemeFromPickers()">
+                </div>
+                <div class="form-group">
+                    <label>點綴色 (亮色/奶油黃)</label>
+                    <input type="color" id="pickerYellow" value="#fff2b2" onchange="updateThemeFromPickers()">
+                </div>
+                <div class="form-group">
+                    <label>網頁背景底色</label>
+                    <input type="color" id="pickerBg" value="#f2f9fb" onchange="updateThemeFromPickers()">
+                </div>
+                <div class="form-group">
+                    <label>主要文字顏色</label>
+                    <input type="color" id="pickerText" value="#486581" onchange="updateThemeFromPickers()">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>🗓️ 紀念日計時板底色</label>
+                    <input type="color" id="pickerDaysBg" value="#e3f2fd" onchange="updateThemeFromPickers()">
+                </div>
+            </div>
+
+            <div class="form-group" style="border-top: 1px dashed #e2e8f0; padding-top: 0.8rem;">
+                <label for="bg-image-url">🖼️ 自訂背景圖片 (可選)</label>
+                <input type="text" id="bg-image-url" placeholder="貼上圖片網址 https://..." onchange="updateThemeFromPickers()">
+                <div class="file-upload-box">
+                    <label class="btn-file-label" for="file-bg-image">📁 上傳背景圖</label>
+                    <input type="file" id="file-bg-image" class="file-input-hidden" accept="image/*" onchange="processFileUpload(this, 'bg-image-url', updateThemeFromPickers)">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 1rem;">
+                <button class="submit-btn" style="background: #94a3b8;" onclick="clearBgImage()">清除背景圖片 🗑️</button>
+                <button class="submit-btn" onclick="resetTheme()">恢復預設色盤 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 個人資料編輯 Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✏️ 編輯個人資料</h3>
+                <button class="btn-close" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSaveProfile(event)">
+                <div class="form-group">
+                    <label for="edit-avatar">大頭貼照片</label>
+                    <input type="text" id="edit-avatar" placeholder="貼上圖片網址 https://..." required>
+                    <div class="file-upload-box">
+                        <label class="btn-file-label" for="file-avatar-image">📁 上傳大頭貼</label>
+                        <input type="file" id="file-avatar-image" class="file-input-hidden" accept="image/*" onchange="processFileUpload(this, 'edit-avatar')">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-name">名字 / 稱呼</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-subtitle">副標題</label>
+                    <input type="text" id="edit-subtitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-bio">簡介</label>
+                    <textarea id="edit-bio" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-tags">自訂標籤 (多個標籤請用逗號隔開)</label>
+                    <input type="text" id="edit-tags" placeholder="例如：#夢女子, #及川徹, #小熊與星星">
+                </div>
+                <button type="submit" class="submit-btn">儲存資料 🧸</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 角色區塊標題編輯 Modal -->
+    <div class="modal-overlay" id="charSettingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✏️ 編輯角色區塊標題</h3>
+                <button class="btn-close" onclick="closeModal('charSettingsModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSaveCharSettings(event)">
+                <div class="form-group">
+                    <label for="edit-char-section-title">區塊大標題</label>
+                    <input type="text" id="edit-char-section-title" placeholder="例如：Character Profiles ☁️🧸" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-char-section-subtitle">區塊副標題 / 說明文字</label>
+                    <textarea id="edit-char-section-subtitle" rows="2" placeholder="輸入區塊說明文字..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">儲存標題設定 🧸</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 社群資料編輯 Modal -->
+    <div class="modal-overlay" id="socialModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✏️ 編輯社群資料與簡介</h3>
+                <button class="btn-close" onclick="closeModal('socialModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSaveSocials(event)">
+                <div class="form-group">
+                    <label for="edit-social-desc">區塊簡介說明</label>
+                    <textarea id="edit-social-desc" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-social-plurk">Plurk 連結</label>
+                    <input type="text" id="edit-social-plurk" placeholder="https://www.plurk.com/...">
+                </div>
+                <div class="form-group">
+                    <label for="edit-social-x">X (Twitter) 連結</label>
+                    <input type="text" id="edit-social-x" placeholder="https://x.com/...">
+                </div>
+                <div class="form-group">
+                    <label for="edit-social-ig">Instagram 連結</label>
+                    <input type="text" id="edit-social-ig" placeholder="https://instagram.com/...">
+                </div>
+                <div class="form-group">
+                    <label for="edit-social-marshmallow">棉花糖 / 提問箱連結</label>
+                    <input type="text" id="edit-social-marshmallow" placeholder="https://marshmallow-qa.com/...">
+                </div>
+                <button type="submit" class="submit-btn">儲存社群設定 🧸</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 新增/編輯作品 Modal -->
+    <div class="modal-overlay" id="workModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="workModalTitle">🧸 新增創作紀錄</h3>
+                <button class="btn-close" onclick="closeModal('workModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSaveWork(event)">
+                <input type="hidden" id="work-edit-id">
+                <div class="form-group">
+                    <label for="work-title">作品標題</label>
+                    <input type="text" id="work-title" placeholder="例：放學後的牛奶麵包 🥖" required>
+                </div>
+                <div class="form-group">
+                    <label for="work-category">分類</label>
+                    <select id="work-category">
+                        <option value="短文">📖 夢短文</option>
+                        <option value="夢繪">🎨 夢繪</option>
+                        <option value="委託">🤝 委託</option>
+                        <option value="設定">💭 角色設定</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="work-image">圖片網址 (可選)</label>
+                    <input type="text" id="work-image" placeholder="https://...">
+                    <div class="file-upload-box">
+                        <label class="btn-file-label" for="file-work-image">📁 上傳照片</label>
+                        <input type="file" id="file-work-image" class="file-input-hidden" accept="image/*" onchange="processFileUpload(this, 'work-image')">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="work-desc">完整作品內容</label>
+                    <textarea id="work-desc" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">發布並儲存 🧸🐾</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 編輯角色檔案 Modal -->
+    <div class="modal-overlay" id="charModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="charModalTitle">🧸 編輯角色檔案</h3>
+                <button class="btn-close" onclick="closeModal('charModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSaveChar(event)">
+                <input type="hidden" id="char-edit-id">
+                <div class="form-group">
+                    <label for="char-name">角色姓名 / 稱呼</label>
+                    <input type="text" id="char-name" placeholder="例如：及川徹 (Oikawa Toru)" required>
+                </div>
+                <div class="form-group">
+                    <label for="char-title">頭銜 / 身份</label>
+                    <input type="text" id="char-title" placeholder="例如：青葉城西高校排球部主將 👑" required>
+                </div>
+                <div class="form-group">
+                    <label for="char-avatar">大頭貼 / 頭像網址 (卡片顯示)</label>
+                    <input type="text" id="char-avatar" placeholder="https://..." required>
+                    <div class="file-upload-box">
+                        <label class="btn-file-label" for="file-char-avatar">📁 上傳頭像</label>
+                        <input type="file" id="file-char-avatar" class="file-input-hidden" accept="image/*" onchange="processFileUpload(this, 'char-avatar')">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="char-banner">完整介紹大圖網址 (點開彈窗時顯示)</label>
+                    <input type="text" id="char-banner" placeholder="https://... (可選，預設使用頭像)">
+                    <div class="file-upload-box">
+                        <label class="btn-file-label" for="file-char-banner">📁 上傳大圖</label>
+                        <input type="file" id="file-char-banner" class="file-input-hidden" accept="image/*" onchange="processFileUpload(this, 'char-banner')">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="char-desc">詳細介紹與個性</label>
+                    <textarea id="char-desc" rows="4" placeholder="輸入角色背景、外貌特徵、與光理的互動等..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="char-story">完整背景故事 / 深入設定 (彈窗內顯示)</label>
+                    <textarea id="char-story" rows="5" placeholder="輸入更詳細的生平設定、交往故事、代表物品等..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="char-tags">特徵標籤 (用逗號隔開)</label>
+                    <input type="text" id="char-tags" placeholder="例如：#排球主將, #牛奶麵包, #大王">
+                </div>
+                <button type="submit" class="submit-btn">儲存角色檔案 🧸✨</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 角色詳細資料 Modal -->
+    <div class="modal-overlay" id="charDetailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="card-badge" id="charDetailTitleBadge">🧸 角色檔案</span>
+                <button class="btn-close" onclick="closeModal('charDetailModal')">&times;</button>
+            </div>
+            <img id="charDetailImage" class="detail-modal-img" src="" alt="角色大圖" style="display: none;">
+            <h2 id="charDetailName" class="detail-title">角色名稱</h2>
+            <div class="detail-meta">
+                <span>👑 身份：<span id="charDetailSubTitle">青葉城西主將</span></span>
+                <span>🐾 Hikari's Room</span>
+            </div>
+            <div style="margin-bottom: 0.8rem;">
+                <h4 style="font-size: 0.9rem; color: var(--baby-blue-dark); margin-bottom: 0.3rem;">☁️ 基本簡介</h4>
+                <div id="charDetailDesc" class="detail-content-box" style="margin-bottom: 1rem;"></div>
+            </div>
+            <div id="charDetailStoryBox" style="margin-bottom: 1rem; display: none;">
+                <h4 style="font-size: 0.9rem; color: var(--baby-blue-dark); margin-bottom: 0.3rem;">📖 深入故事與設定</h4>
+                <div id="charDetailStory" class="detail-content-box" style="background-color: var(--goose-yellow-light); border-color: var(--goose-yellow-border); color: var(--goose-yellow-text);"></div>
+            </div>
+            <div class="tags" id="charDetailTags" style="justify-content: flex-start; margin-top: 0.8rem;"></div>
+        </div>
+    </div>
+
+    <!-- 作品詳細資料 Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="card-badge" id="detailCategory">📖 短文</span>
+                <button class="btn-close" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <img id="detailImage" class="detail-modal-img" src="" alt="作品圖片" style="display: none;">
+            <h2 id="detailTitle" class="detail-title">作品標題</h2>
+            <div class="detail-meta">
+                <span>📅 日期：<span id="detailDate">2026-03-20</span></span>
+                <span>🐾 Hikari & Oikawa</span>
+            </div>
+            <div id="detailContent" class="detail-content-box"></div>
+        </div>
+    </div>
+
+    <!-- 紀念日天數 Modal -->
+    <div class="modal-overlay" id="daysModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🗓️ 編輯天數紀錄與紀念日</h3>
+                <button class="btn-close" onclick="closeModal('daysModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSaveDays(event)">
+                <div class="form-group">
+                    <label for="edit-days-title">紀錄標題</label>
+                    <input type="text" id="edit-days-title" placeholder="例如：與阿徹牽手漫步 💛" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-days-date">紀念日 / 開始日期</label>
+                    <input type="date" id="edit-days-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-days-note">溫馨寄語 / 備註說明</label>
+                    <input type="text" id="edit-days-note" placeholder="例如：每一天都有你在，就是最好的時光 ✨" required>
+                </div>
+                <button type="submit" class="submit-btn">儲存紀念日設定 🧸</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 確認操作 Modal (替代原生 confirm) -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center;">
+                <h3 id="confirmTitle">⚠️ 確認刪除</h3>
+            </div>
+            <p id="confirmMessage" style="margin: 1rem 0; color: var(--text-color); font-size: 0.95rem;">確定要執行此動作嗎？</p>
+            <div style="display: flex; gap: 10px; margin-top: 1.2rem;">
+                <button type="button" class="submit-btn" style="background: #cbd5e1; color: #334155;" onclick="closeModal('confirmModal')">取消</button>
+                <button type="button" class="submit-btn" id="confirmActionBtn" style="background: #ef4444;">確定刪除</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Hikari's Dream World. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // APP 與 Firebase 初始化設定
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hikari-room-cloud';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "demo-api-key",
+            authDomain: "demo-app.firebaseapp.com",
+            projectId: "demo-app",
+            storageBucket: "demo-app.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        let app, db, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+        } catch (e) {
+            console.warn("Firebase 初始化時使用區域儲存模式:", e);
+        }
+
+        // 定義雲端路徑 (遵循 API STRICT Path 規範)
+        const publicConfigDocRef = db ? doc(db, 'artifacts', appId, 'public', 'data', 'siteConfig', 'main') : null;
+        const publicWorksCollRef = db ? collection(db, 'artifacts', appId, 'public', 'data', 'works') : null;
+        const publicCharsCollRef = db ? collection(db, 'artifacts', appId, 'public', 'data', 'characters') : null;
+
+        // 登入並綁定 Real-time 雲端監聽器
+        async function initCloudSync() {
+            if (!auth || !db) {
+                updateSyncBadge('💾 本地離線模式');
+                return;
+            }
+
+            try {
+                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (token) {
+                    await signInWithCustomToken(auth, token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                updateSyncBadge('☁️ 雲端即時連線');
+
+                // 1. 監聽全站設定 (Profile, Theme, Days, Socials, CharSettings)
+                onSnapshot(publicConfigDocRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+                        if (data.profile) window.profile = data.profile;
+                        if (data.charSettings) window.charSettings = data.charSettings;
+                        if (data.daysData) window.daysData = data.daysData;
+                        if (data.socials) window.socials = data.socials;
+                        if (data.theme) {
+                            window.currentTheme = data.theme;
+                            applyThemeColors(window.currentTheme);
+                            syncThemePickersUI();
+                        }
+                        renderProfile();
+                        renderCharSettings();
+                        renderDaysCounter();
+                        renderSocials();
+                    } else {
+                        // 若雲端尚無資料，將預設值上傳雲端
+                        syncMainConfigToCloud();
+                    }
+                }, (error) => {
+                    console.error("雲端設定監聽異常:", error);
+                });
+
+                // 2. 監聽作品列表 Works
+                onSnapshot(publicWorksCollRef, (snapshot) => {
+                    const loadedWorks = [];
+                    snapshot.forEach((docSnap) => {
+                        loadedWorks.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    if (loadedWorks.length > 0) {
+                        window.works = loadedWorks;
+                        renderWorks();
+                    } else {
+                        // 若無作品，寫入初始作品
+                        seedInitialWorks();
+                    }
+                }, (error) => {
+                    console.error("作品庫監聽異常:", error);
+                });
+
+                // 3. 監聽角色列表 Characters
+                onSnapshot(publicCharsCollRef, (snapshot) => {
+                    const loadedChars = [];
+                    snapshot.forEach((docSnap) => {
+                        loadedChars.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    if (loadedChars.length > 0) {
+                        window.characters = loadedChars;
+                        renderCharacters();
+                    } else {
+                        seedInitialCharacters();
+                    }
+                }, (error) => {
+                    console.error("角色庫監聽異常:", error);
+                });
+
+            } catch (err) {
+                console.error("雲端認證失敗:", err);
+                updateSyncBadge('💾 本地備用模式');
+            }
+        }
+
+        function updateSyncBadge(text) {
+            const badge = document.getElementById('syncStatusBadge');
+            if (badge) badge.textContent = text;
+        }
+
+        async function syncMainConfigToCloud() {
+            if (!auth?.currentUser || !publicConfigDocRef) return;
+            try {
+                await setDoc(publicConfigDocRef, {
+                    profile: window.profile,
+                    charSettings: window.charSettings,
+                    daysData: window.daysData,
+                    socials: window.socials,
+                    theme: window.currentTheme,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            } catch (err) {
+                console.error("雲端設定寫入失敗:", err);
+            }
+        }
+
+        async function seedInitialWorks() {
+            if (!auth?.currentUser || !publicWorksCollRef) return;
+            for (const w of window.works) {
+                const idStr = String(w.id);
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'works', idStr);
+                await setDoc(docRef, { ...w });
+            }
+        }
+
+        async function seedInitialCharacters() {
+            if (!auth?.currentUser || !publicCharsCollRef) return;
+            for (const c of window.characters) {
+                const idStr = String(c.id);
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'characters', idStr);
+                await setDoc(docRef, { ...c });
+            }
+        }
+
+        // 將廣播同步綁定到全域 Save 函數
+        window.saveToCloud = async function() {
+            localStorage.setItem('yume_profile', JSON.stringify(window.profile));
+            localStorage.setItem('yume_char_settings', JSON.stringify(window.charSettings));
+            localStorage.setItem('yume_characters', JSON.stringify(window.characters));
+            localStorage.setItem('yume_days', JSON.stringify(window.daysData));
+            localStorage.setItem('yume_socials', JSON.stringify(window.socials));
+            localStorage.setItem('yume_works', JSON.stringify(window.works));
+            localStorage.setItem('yume_theme', JSON.stringify(window.currentTheme));
+
+            // 推送到雲端
+            await syncMainConfigToCloud();
+        };
+
+        window.saveWorkToCloud = async function(workData) {
+            if (!auth?.currentUser || !publicWorksCollRef) {
+                window.saveToCloud();
+                renderWorks();
+                return;
+            }
+            try {
+                const idStr = String(workData.id);
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'works', idStr);
+                await setDoc(docRef, workData);
+            } catch (e) {
+                console.error("儲存作品至雲端失敗:", e);
+            }
+        };
+
+        window.deleteWorkFromCloud = async function(workId) {
+            if (!auth?.currentUser || !publicWorksCollRef) {
+                window.works = window.works.filter(w => w.id !== workId);
+                window.saveToCloud();
+                renderWorks();
+                return;
+            }
+            try {
+                const idStr = String(workId);
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'works', idStr);
+                await deleteDoc(docRef);
+            } catch (e) {
+                console.error("從雲端刪除作品失敗:", e);
+            }
+        };
+
+        window.saveCharToCloud = async function(charData) {
+            if (!auth?.currentUser || !publicCharsCollRef) {
+                window.saveToCloud();
+                renderCharacters();
+                return;
+            }
+            try {
+                const idStr = String(charData.id);
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'characters', idStr);
+                await setDoc(docRef, charData);
+            } catch (e) {
+                console.error("儲存角色至雲端失敗:", e);
+            }
+        };
+
+        window.deleteCharFromCloud = async function(charId) {
+            if (!auth?.currentUser || !publicCharsCollRef) {
+                window.characters = window.characters.filter(c => c.id !== charId);
+                window.saveToCloud();
+                renderCharacters();
+                return;
+            }
+            try {
+                const idStr = String(charId);
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'characters', idStr);
+                await deleteDoc(docRef);
+            } catch (e) {
+                console.error("從雲端刪除角色失敗:", e);
+            }
+        };
+
+        // 頁面加載完成後啟動雲端同步
+        window.addEventListener('DOMContentLoaded', () => {
+            initCloudSync();
+        });
+    </script>
+
+    <script>
+        const defaultProfile = {
+            name: "熊田光理 (Kumada Hikari)",
+            subtitle: "光理 (くまちゃん) ✕ 及川徹 的日常記錄 🧸💛",
+            bio: "歡迎來到 Hikari's Room！這裡記錄著我與阿徹（及川徹）的各種夢向小說、委託繪圖與小熊日常故事 ✨",
+            avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+            avatarBadge: "🧸",
+            tags: ["#夢女子", "#及川徹", "#小熊與星星 🧸✨", "#寶寶藍與奶油黃"]
+        };
+
+        const defaultCharSettings = {
+            title: "Character Profiles ☁️🧸",
+            subtitle: "光理與阿徹的角色檔案與基本設定（點擊卡片可查看完整介紹 ✨）"
+        };
+
+        const defaultCharacters = [
+            {
+                id: 1,
+                name: "熊田光理 (Kumada Hikari)",
+                title: "光理 (くまちゃん) 🧸✨",
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+                banner: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
+                desc: "性格溫柔、帶點天然呆的女孩。喜歡收集各種可愛的小熊周邊、烘焙奶油餅乾與甜點。平時最喜歡陪伴阿徹練習排球，是阿徹專屬的小熊應援團 💛",
+                story: "【光理的日常小祕密】\n\n1. 房間裡總是擺滿了及川送的各種排球造型抱枕與小熊娃娃。\n2. 拿手絕活是製作香濃的牛奶麵包布丁，每次帶到球場總能瞬間被及川掃空。\n3. 雖然平時看起來有些容易害羞，但在及川比賽陷入低潮時，總能用最堅定的眼神給予他最大的安定感。",
+                tags: ["#夢女子", "#溫柔系", "#牛奶麵包控", "#小熊與星星"]
+            },
+            {
+                id: 2,
+                name: "及川徹 (Oikawa Toru)",
+                title: "青葉城西高校排球部主將 👑",
+                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+                banner: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+                desc: "對排球充滿熱情與絕對自信的天才舉球員。在外人面前總是帶著爽朗華麗的笑容，但在くまちゃん面前則會展現出溫柔、愛撒嬌又帶點黏人的專屬另一面 🥖",
+                story: "【大王的秘密戀愛記事】\n\n1. 手機桌布永遠是兩人一起去遊樂園時，光理抱著大熊娃娃的合照。\n2. 表面上雖然常常捉弄光理，但只要看到光理跟其他可愛周邊聊天就會偷偷吃醋。\n3. 最喜歡在深夜練習結束後，牽著光理的手散步回家，並理所當然地要求光理稱讚他今天的發球。",
+                tags: ["#及川徹", "#大王", "#排球主將", "#特大號撒嬌精"]
+            }
+        ];
+
+        const defaultDaysData = {
+            title: "☁️ 與阿徹牽手漫步 💛",
+            startDate: "2024-10-08",
+            note: "每一天都有你在，就是最好的時光 ✨"
+        };
+
+        const defaultSocials = {
+            desc: "歡迎透過以下平台與我交流夢向、查看最新近況或私訊討論！🧸💛",
+            items: [
+                { icon: "🧸", label: "Plurk 噗浪", url: "https://www.plurk.com", handle: "@your_plurk_id" },
+                { icon: "🐤", label: "X (Twitter)", url: "https://x.com", handle: "@your_twitter_id" },
+                { icon: "📸", label: "Instagram", url: "https://instagram.com", handle: "@your_instagram_id" },
+                { icon: "🍬", label: "棉花糖 / 提問箱", url: "https://marshmallow-qa.com", handle: "匿名留言給光理" }
+            ]
+        };
+
+        const defaultWorks = [
+            {
+                id: 1,
+                title: "放學後的牛奶麵包 🥖",
+                category: "短文",
+                image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=500&q=80",
+                desc: "「くまちゃん、今天練習完要不要一起去便利商店？」\n\n青葉城西體育館外，剛結束特訓的及川徹正用毛巾擦著汗，髮梢還帶著些許濕氣。他轉過頭看著坐在階梯上的光理，嘴角露出了那抹招牌又帶點撒嬌的笑容。\n\n「又想吃牛奶麵包了嗎，阿徹？」光理笑著問。\n\n「知我者莫若くまちゃん！今天可是剛上架新鮮出爐的牛奶麵包哦～」",
+                date: "2026-03-10"
+            },
+            {
+                id: 2,
+                title: "雙人夏日祭典繪圖 🎆",
+                category: "委託",
+                image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80",
+                desc: "【夢繪委託紀錄】\n非常感謝繪師老師神仙級的筆觸！把我們夏日祭典的畫面繪製得這麼唯美好棒！\n\n光理穿著淡鵝黃色的小熊印花浴衣，阿徹穿著深藍色甚平，一手牽著光理。",
+                date: "2026-03-15"
+            },
+            {
+                id: 3,
+                title: "光理与阿徹的100問 💭",
+                category: "設定",
+                image: "",
+                desc: "【角色與關係設定問答輯】\n\nQ1: 兩人平時是怎麼稱呼對方的？\n阿徹叫光理：「くまちゃん (Kumachan)」或「光理」；光理叫阿徹：「阿徹」。",
+                date: "2026-03-18"
+            }
+        ];
+
+        window.profile = JSON.parse(localStorage.getItem('yume_profile')) || defaultProfile;
+        window.charSettings = JSON.parse(localStorage.getItem('yume_char_settings')) || defaultCharSettings;
+        window.characters = JSON.parse(localStorage.getItem('yume_characters')) || defaultCharacters;
+        window.daysData = JSON.parse(localStorage.getItem('yume_days')) || defaultDaysData;
+        window.socials = JSON.parse(localStorage.getItem('yume_socials')) || defaultSocials;
+        window.works = JSON.parse(localStorage.getItem('yume_works')) || defaultWorks;
+        window.currentTheme = JSON.parse(localStorage.getItem('yume_theme')) || { main: '#8ccbe8', yellow: '#fff2b2', bg: '#f2f9fb', text: '#486581', daysBg: '#e3f2fd', bgImage: '' };
+        window.adminPin = localStorage.getItem('yume_admin_pin') || '07201219';
+        
+        window.isAdmin = false;
+        window.currentFilter = 'all';
+        window.searchQuery = '';
+        window.sortOrder = 'newest';
+        window.viewMode = localStorage.getItem('yume_view_mode') || 'mode-card';
+
+        const PRESET_THEMES = {
+            babyblue: { main: '#8ccbe8', yellow: '#fff2b2', bg: '#f2f9fb', text: '#486581', daysBg: '#e3f2fd', bgImage: '' },
+            sakura: { main: '#f4a261', yellow: '#ffddd2', bg: '#fff5f5', text: '#6b3e2e', daysBg: '#ffe5ec', bgImage: '' },
+            lavender: { main: '#b8c0ff', yellow: '#ffd6ff', bg: '#f8f7ff', text: '#4a4e69', daysBg: '#e8e8e4', bgImage: '' },
+            milktea: { main: '#ddb892', yellow: '#f0efeb', bg: '#faf7f2', text: '#582f0e', daysBg: '#f3e9dc', bgImage: '' },
+            mint: { main: '#74c69d', yellow: '#d8f3dc', bg: '#f1faee', text: '#2d6a4f', daysBg: '#e8f5e9', bgImage: '' },
+            midnight: { main: '#64748b', yellow: '#fef08a', bg: '#0f172a', text: '#f1f5f9', daysBg: '#1e293b', bgImage: '' }
+        };
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function militaryDate(dateStr) {
+            if (!dateStr) return '2026-03-20';
+            return dateStr;
+        }
+
+        function hexToRgba(hex, alpha = 1) {
+            if (!hex) return `rgba(0,0,0,${alpha})`;
+            let c = hex.replace('#', '');
+            if (c.length === 3) {
+                c = c.split('').map(char => char + char).join('');
+            }
+            const num = parseInt(c, 16);
+            if (isNaN(num)) return `rgba(0,0,0,${alpha})`;
+            const r = (num >> 16) & 255;
+            const g = (num >> 8) & 255;
+            const b = num & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function adjustColorBrightness(hex, percent) {
+            if (!hex) return hex || '#000000';
+            let num = parseInt(hex.replace('#', ''), 16);
+            if (isNaN(num)) return hex;
+            let r = (num >> 16) + Math.round(255 * (percent / 100));
+            let g = ((num >> 8) & 0x00FF) + Math.round(255 * (percent / 100));
+            let b = (num & 0x0000FF) + Math.round(255 * (percent / 100));
+
+            r = Math.min(255, Math.max(0, r));
+            g = Math.min(255, Math.max(0, g));
+            b = Math.min(255, Math.max(0, b));
+
+            return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        function applyThemeColors(theme) {
+            if (!theme) return;
+            const root = document.documentElement;
+            const main = theme.main || '#8ccbe8';
+            const yellow = theme.yellow || '#fff2b2';
+            const bg = theme.bg || '#f2f9fb';
+            const text = theme.text || '#486581';
+            const daysBg = theme.daysBg || '#e3f2fd';
+
+            root.style.setProperty('--baby-blue-main', main);
+            root.style.setProperty('--goose-yellow-main', yellow);
+            root.style.setProperty('--bg-color', bg);
+            root.style.setProperty('--text-color', text);
+
+            const daysGradient = `linear-gradient(135deg, ${hexToRgba(main, 0.2)} 0%, ${daysBg} 100%)`;
+            root.style.setProperty('--days-card-bg', daysGradient);
+
+            root.style.setProperty('--baby-blue-light', hexToRgba(main, 0.18));
+            root.style.setProperty('--baby-blue-border', hexToRgba(main, 0.35));
+            root.style.setProperty('--baby-blue-hover', adjustColorBrightness(main, -12));
+            root.style.setProperty('--baby-blue-dark', adjustColorBrightness(main, -40));
+
+            root.style.setProperty('--goose-yellow-light', hexToRgba(yellow, 0.35));
+            root.style.setProperty('--goose-yellow-border', hexToRgba(yellow, 0.7));
+            root.style.setProperty('--goose-yellow-text', adjustColorBrightness(yellow, -55));
+
+            root.style.setProperty('--text-sub', hexToRgba(text, 0.72));
+            root.style.setProperty('--shadow', `0 10px 25px ${hexToRgba(main, 0.22)}`);
+            root.style.setProperty('--shadow-yellow', `0 8px 20px ${hexToRgba(yellow, 0.45)}`);
+
+            if (theme.bgImage) {
+                root.style.setProperty('--bg-image', `url("${theme.bgImage}")`);
+            } else {
+                root.style.setProperty('--bg-image', 'none');
+            }
+        }
+
+        function syncThemePickersUI() {
+            if (window.currentTheme) {
+                if (document.getElementById('pickerMain')) document.getElementById('pickerMain').value = window.currentTheme.main || '#8ccbe8';
+                if (document.getElementById('pickerYellow')) document.getElementById('pickerYellow').value = window.currentTheme.yellow || '#fff2b2';
+                if (document.getElementById('pickerBg')) document.getElementById('pickerBg').value = window.currentTheme.bg || '#f2f9fb';
+                if (document.getElementById('pickerText')) document.getElementById('pickerText').value = window.currentTheme.text || '#486581';
+                if (document.getElementById('pickerDaysBg')) document.getElementById('pickerDaysBg').value = window.currentTheme.daysBg || '#e3f2fd';
+                if (document.getElementById('bg-image-url')) document.getElementById('bg-image-url').value = window.currentTheme.bgImage || '';
+            }
+        }
+
+        function updateThemeFromPickers() {
+            const main = document.getElementById('pickerMain').value;
+            const yellow = document.getElementById('pickerYellow').value;
+            const bg = document.getElementById('pickerBg').value;
+            const text = document.getElementById('pickerText').value;
+            const daysBg = document.getElementById('pickerDaysBg').value;
+            const bgImage = document.getElementById('bg-image-url').value.trim();
+
+            window.currentTheme = { main, yellow, bg, text, daysBg, bgImage };
+            applyThemeColors(window.currentTheme);
+            if (window.saveToCloud) window.saveToCloud();
+        }
+
+        function resetTheme() {
+            window.currentTheme = { main: '#8ccbe8', yellow: '#fff2b2', bg: '#f2f9fb', text: '#486581', daysBg: '#e3f2fd', bgImage: '' };
+            applyThemeColors(window.currentTheme);
+            syncThemePickersUI();
+            if (window.saveToCloud) window.saveToCloud();
+        }
+
+        function applyPresetTheme(presetKey) {
+            if (PRESET_THEMES[presetKey]) {
+                window.currentTheme = { ...PRESET_THEMES[presetKey] };
+                applyThemeColors(window.currentTheme);
+                syncThemePickersUI();
+                if (window.saveToCloud) window.saveToCloud();
+            }
+        }
+
+        function clearBgImage() {
+            if (window.currentTheme) {
+                window.currentTheme.bgImage = '';
+                applyThemeColors(window.currentTheme);
+                syncThemePickersUI();
+                if (window.saveToCloud) window.saveToCloud();
+            }
+        }
+
+        function openThemeModal() {
+            syncThemePickersUI();
+            document.getElementById('themeModal').classList.add('active');
+        }
+
+        function toggleAdminLogin() {
+            if (window.isAdmin) {
+                window.isAdmin = false;
+                updateAdminUI();
+            } else {
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminErrorMsg').style.display = 'none';
+                document.getElementById('adminModal').classList.add('active');
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pwd = document.getElementById('adminPassword').value;
+            if (pwd === window.adminPin) {
+                window.isAdmin = true;
+                closeModal('adminModal');
+                updateAdminUI();
+            } else {
+                document.getElementById('adminErrorMsg').style.display = 'block';
+            }
+        }
+
+        function updateAdminUI() {
+            if (window.isAdmin) {
+                document.body.classList.add('is-admin');
+                document.getElementById('btnAdminAuth').textContent = '🔒 登出管理員';
+            } else {
+                document.body.classList.remove('is-admin');
+                document.getElementById('btnAdminAuth').textContent = '🔑 管理員登入';
+            }
+            renderWorks();
+            renderCharacters();
+        }
+
+        function renderProfile() {
+            document.getElementById('displayName').textContent = window.profile.name;
+            document.getElementById('displaySubtitle').textContent = window.profile.subtitle;
+            document.getElementById('displayBio').textContent = window.profile.bio;
+            document.getElementById('displayAvatar').src = window.profile.avatar;
+            document.getElementById('displayAvatarBadge').textContent = window.profile.avatarBadge || '🧸';
+
+            const tagsContainer = document.getElementById('displayTags');
+            tagsContainer.innerHTML = '';
+            (window.profile.tags || []).forEach(t => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'tag';
+                tagSpan.textContent = t.trim();
+                tagsContainer.appendChild(tagSpan);
+            });
+        }
+
+        function renderCharSettings() {
+            document.getElementById('displayCharSectionTitle').textContent = window.charSettings.title;
+            document.getElementById('displayCharSectionSubtitle').textContent = window.charSettings.subtitle;
+        }
+
+        function openCharSettingsModal() {
+            document.getElementById('edit-char-section-title').value = window.charSettings.title || '';
+            document.getElementById('edit-char-section-subtitle').value = window.charSettings.subtitle || '';
+            document.getElementById('charSettingsModal').classList.add('active');
+        }
+
+        function handleSaveCharSettings(e) {
+            e.preventDefault();
+            const title = document.getElementById('edit-char-section-title').value.trim();
+            const subtitle = document.getElementById('edit-char-section-subtitle').value.trim();
+            
+            window.charSettings = { title, subtitle };
+            renderCharSettings();
+            if (window.saveToCloud) window.saveToCloud();
+            closeModal('charSettingsModal');
+        }
+
+        function renderCharacters() {
+            const grid = document.getElementById('charactersGrid');
+            if (!grid) return;
+
+            grid.innerHTML = (window.characters || []).map(c => {
+                const tagsHtml = (c.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+                const adminBtns = window.isAdmin ? `
+                    <div style="margin-top: auto; padding-top: 0.6rem; border-top: 1px dashed var(--baby-blue-border); display: flex; justify-content: flex-end; gap: 8px;" onclick="event.stopPropagation()">
+                        <button class="btn-card-action btn-card-edit" onclick="openCharModal('${c.id}', event)">✏️ 編輯</button>
+                        <button class="btn-card-action btn-card-delete" onclick="deleteChar('${c.id}', event)">🗑️ 刪除</button>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="card" onclick="openCharDetailModal('${c.id}')" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem;">
+                            <img src="${escapeHtml(c.avatar)}" alt="${escapeHtml(c.name)}" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 3px solid var(--white); box-shadow: var(--shadow); flex-shrink: 0;" onerror="this.src='https://placehold.co/100x100/8ccbe8/ffffff?text=Avatar'">
+                            <div>
+                                <h3 style="margin-bottom: 0.2rem; font-size: 1.1rem; color: var(--baby-blue-dark);">${escapeHtml(c.name)}</h3>
+                                <span style="font-size: 0.8rem; background: var(--goose-yellow-light); color: var(--goose-yellow-text); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--goose-yellow-border); font-weight: bold; display: inline-block;">${escapeHtml(c.title)}</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.88rem; color: var(--text-color); line-height: 1.6; margin-bottom: 0.8rem; white-space: pre-line;" class="preview-text">${escapeHtml(c.desc)}</p>
+                        <div class="tags" style="justify-content: flex-start; margin-bottom: 0.5rem;">${tagsHtml}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--baby-blue-border); padding-top: 0.5rem; font-size: 0.78rem; margin-top: auto;">
+                            <span style="color: var(--text-sub);">✨ 點擊查看詳細設定</span>
+                            <span class="read-more-hint">完整檔案 🧸</span>
+                        </div>
+                        ${adminBtns}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openCharDetailModal(id) {
+            const char = window.characters.find(c => String(c.id) === String(id));
+            if (!char) return;
+
+            document.getElementById('charDetailTitleBadge').textContent = `🧸 ${char.title}`;
+            document.getElementById('charDetailName').textContent = char.name;
+            document.getElementById('charDetailSubTitle').textContent = char.title;
+            document.getElementById('charDetailDesc').textContent = char.desc;
+
+            const imgEl = document.getElementById('charDetailImage');
+            const bannerUrl = char.banner || char.avatar;
+            if (bannerUrl) {
+                imgEl.src = bannerUrl;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+
+            const storyBox = document.getElementById('charDetailStoryBox');
+            const storyEl = document.getElementById('charDetailStory');
+            if (char.story && char.story.trim() !== '') {
+                storyEl.textContent = char.story;
+                storyBox.style.display = 'block';
+            } else {
+                storyBox.style.display = 'none';
+            }
+
+            const tagsContainer = document.getElementById('charDetailTags');
+            tagsContainer.innerHTML = (char.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+
+            document.getElementById('charDetailModal').classList.add('active');
+        }
+
+        function openCharModal(id = null, e = null) {
+            if (e) e.stopPropagation();
+
+            if (id) {
+                const char = window.characters.find(c => String(c.id) === String(id));
+                if (!char) return;
+                document.getElementById('charModalTitle').textContent = '✏️ 編輯角色檔案';
+                document.getElementById('char-edit-id').value = char.id;
+                document.getElementById('char-name').value = char.name;
+                document.getElementById('char-title').value = char.title;
+                document.getElementById('char-avatar').value = char.avatar;
+                document.getElementById('char-banner').value = char.banner || '';
+                document.getElementById('char-desc').value = char.desc;
+                document.getElementById('char-story').value = char.story || '';
+                document.getElementById('char-tags').value = (char.tags || []).join(', ');
+            } else {
+                document.getElementById('charModalTitle').textContent = '🧸 新增角色檔案';
+                document.getElementById('char-edit-id').value = '';
+                document.getElementById('char-name').value = '';
+                document.getElementById('char-title').value = '';
+                document.getElementById('char-avatar').value = '';
+                document.getElementById('char-banner').value = '';
+                document.getElementById('char-desc').value = '';
+                document.getElementById('char-story').value = '';
+                document.getElementById('char-tags').value = '';
+            }
+            document.getElementById('charModal').classList.add('active');
+        }
+
+        function handleSaveChar(e) {
+            e.preventDefault();
+            const editId = document.getElementById('char-edit-id').value;
+            const name = document.getElementById('char-name').value.trim();
+            const title = document.getElementById('char-title').value.trim();
+            const avatar = document.getElementById('char-avatar').value.trim();
+            const banner = document.getElementById('char-banner').value.trim();
+            const desc = document.getElementById('char-desc').value.trim();
+            const story = document.getElementById('char-story').value.trim();
+            const tagsInput = document.getElementById('char-tags').value.trim();
+            const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+            const charData = {
+                id: editId ? (isNaN(editId) ? editId : Number(editId)) : Date.now(),
+                name,
+                title,
+                avatar,
+                banner,
+                desc,
+                story,
+                tags
+            };
+
+            if (window.saveCharToCloud) {
+                window.saveCharToCloud(charData);
+            } else {
+                if (editId) {
+                    const idx = window.characters.findIndex(c => String(c.id) === String(editId));
+                    if (idx !== -1) window.characters[idx] = charData;
+                } else {
+                    window.characters.push(charData);
+                }
+                window.saveToCloud();
+                renderCharacters();
+            }
+            closeModal('charModal');
+        }
+
+        function deleteChar(id, e) {
+            if (e) e.stopPropagation();
+            showConfirmModal("確定要刪除這個角色檔案嗎？", () => {
+                if (window.deleteCharFromCloud) {
+                    window.deleteCharFromCloud(id);
+                } else {
+                    window.characters = window.characters.filter(c => String(c.id) !== String(id));
+                    window.saveToCloud();
+                    renderCharacters();
+                }
+            });
+        }
+
+        function renderSocials() {
+            document.getElementById('displaySocialDesc').textContent = window.socials.desc;
+            const container = document.getElementById('socialLinksContainer');
+            container.innerHTML = '';
+
+            window.socials.items.forEach(item => {
+                const a = document.createElement('a');
+                a.className = 'social-item';
+                a.href = item.url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.innerHTML = `
+                    <div class="social-info">
+                        <span>${item.icon}</span>
+                        <span>${escapeHtml(item.label)}</span>
+                    </div>
+                    <span class="social-handle">${escapeHtml(item.handle)}</span>
+                `;
+                container.appendChild(a);
+            });
+        }
+
+        function openProfileModal() {
+            document.getElementById('edit-avatar').value = window.profile.avatar || '';
+            document.getElementById('edit-name').value = window.profile.name || '';
+            document.getElementById('edit-subtitle').value = window.profile.subtitle || '';
+            document.getElementById('edit-bio').value = window.profile.bio || '';
+            document.getElementById('edit-tags').value = (window.profile.tags || []).join(', ');
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function handleSaveProfile(e) {
+            e.preventDefault();
+            const avatar = document.getElementById('edit-avatar').value.trim();
+            const name = document.getElementById('edit-name').value.trim();
+            const subtitle = document.getElementById('edit-subtitle').value.trim();
+            const bio = document.getElementById('edit-bio').value.trim();
+            const tagsInput = document.getElementById('edit-tags').value.trim();
+            const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+            window.profile = { ...window.profile, avatar, name, subtitle, bio, tags };
+            renderProfile();
+            if (window.saveToCloud) window.saveToCloud();
+            closeModal('profileModal');
+        }
+
+        function openSocialModal() {
+            document.getElementById('edit-social-desc').value = window.socials.desc || '';
+            const items = window.socials.items || [];
+            document.getElementById('edit-social-plurk').value = items[0]?.url || '';
+            document.getElementById('edit-social-x').value = items[1]?.url || '';
+            document.getElementById('edit-social-ig').value = items[2]?.url || '';
+            document.getElementById('edit-social-marshmallow').value = items[3]?.url || '';
+            document.getElementById('socialModal').classList.add('active');
+        }
+
+        function handleSaveSocials(e) {
+            e.preventDefault();
+            const desc = document.getElementById('edit-social-desc').value.trim();
+            const plurk = document.getElementById('edit-social-plurk').value.trim();
+            const xUrl = document.getElementById('edit-social-x').value.trim();
+            const igUrl = document.getElementById('edit-social-ig').value.trim();
+            const marshUrl = document.getElementById('edit-social-marshmallow').value.trim();
+
+            window.socials.desc = desc;
+            if (window.socials.items[0]) window.socials.items[0].url = plurk || '#';
+            if (window.socials.items[1]) window.socials.items[1].url = xUrl || '#';
+            if (window.socials.items[2]) window.socials.items[2].url = igUrl || '#';
+            if (window.socials.items[3]) window.socials.items[3].url = marshUrl || '#';
+
+            renderSocials();
+            if (window.saveToCloud) window.saveToCloud();
+            closeModal('socialModal');
+        }
+
+        function openDaysModal() {
+            document.getElementById('edit-days-title').value = window.daysData.title || '';
+            document.getElementById('edit-days-date').value = window.daysData.startDate || '';
+            document.getElementById('edit-days-note').value = window.daysData.note || '';
+            document.getElementById('daysModal').classList.add('active');
+        }
+
+        function handleSaveDays(e) {
+            e.preventDefault();
+            const title = document.getElementById('edit-days-title').value.trim();
+            const startDate = document.getElementById('edit-days-date').value;
+            const note = document.getElementById('edit-days-note').value.trim();
+
+            window.daysData = { title, startDate, note };
+            renderDaysCounter();
+            if (window.saveToCloud) window.saveToCloud();
+            closeModal('daysModal');
+        }
+
+        let daysIntervalTimer = null;
+
+        function renderDaysCounter() {
+            if (!window.daysData) return;
+            const titleEl = document.getElementById('displayDaysTitle');
+            const countEl = document.getElementById('displayDaysCount');
+            const noteEl = document.getElementById('displayDaysNote');
+            const timerEl = document.getElementById('liveClockDisplay');
+
+            if (titleEl) titleEl.textContent = window.daysData.title || '☁️ 與阿徹牽手漫步 💛';
+            if (noteEl) noteEl.textContent = window.daysData.note || '';
+
+            function updateCounter() {
+                if (!window.daysData.startDate) return;
+                let startDateStr = window.daysData.startDate;
+                if (!startDateStr.includes('T')) {
+                    startDateStr += 'T00:00:00';
+                }
+                const start = new Date(startDateStr);
+                const now = new Date();
+
+                if (isNaN(start.getTime())) return;
+
+                const diffMs = Math.max(0, now - start);
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+                if (countEl) countEl.textContent = diffDays + 1;
+
+                if (timerEl) {
+                    const hStr = String(hours).padStart(2, '0');
+                    const mStr = String(minutes).padStart(2, '0');
+                    const sStr = String(seconds).padStart(2, '0');
+                    timerEl.textContent = `${diffDays} 天 ${hStr} 小時 ${mStr} 分 ${sStr} 秒`;
+                }
+            }
+
+            updateCounter();
+            if (daysIntervalTimer) clearInterval(daysIntervalTimer);
+            daysIntervalTimer = setInterval(updateCounter, 1000);
+        }
+
+        function getCategoryIcon(cat) {
+            if (cat === '短文') return '📖';
+            if (cat === '夢繪') return '🎨';
+            if (cat === '委託') return '🤝';
+            if (cat === '設定') return '💭';
+            return '✨';
+        }
+
+        function renderWorks() {
+            const grid = document.getElementById('worksGrid');
+            const stats = document.getElementById('worksStats');
+            if (!grid) return;
+
+            let filtered = (window.works || []).filter(w => {
+                const matchesCategory = window.currentFilter === 'all' || w.category === window.currentFilter;
+                const query = (window.searchQuery || '').toLowerCase();
+                const matchesQuery = !query || 
+                    w.title.toLowerCase().includes(query) || 
+                    w.desc.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.date || 0);
+                const dateB = new Date(b.date || 0);
+                return window.sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+
+            if (stats) {
+                stats.textContent = `顯示 ${filtered.length} 項作品 (共 ${(window.works || []).length} 項)`;
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state">尚無符合條件的作品紀錄 ☁️🧸</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(w => {
+                const imgHtml = w.image ? `<img src="${escapeHtml(w.image)}" alt="${escapeHtml(w.title)}" class="card-img" onerror="this.style.display='none'">` : '';
+                const adminBtns = window.isAdmin ? `
+                    <div>
+                        <button class="btn-card-action btn-card-edit" onclick="openWorkModal('${w.id}', event)">✏️ 編輯</button>
+                        <button class="btn-card-action btn-card-delete" onclick="deleteWork('${w.id}', event)">🗑️ 刪除</button>
+                    </div>
+                ` : '';
+
+                if (window.viewMode === 'mode-list') {
+                    return `
+                        <div class="card" onclick="openDetailModal('${w.id}')">
+                            <div class="list-left-content">
+                                ${imgHtml}
+                                <div class="list-text-wrapper">
+                                    <h3>${escapeHtml(w.title)}</h3>
+                                    <span style="font-size: 0.75rem; color: var(--text-sub);">📅 ${militaryDate(w.date)}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="card-badge">${getCategoryIcon(w.category)} ${escapeHtml(w.category)}</span>
+                                ${adminBtns}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="card" onclick="openDetailModal('${w.id}')">
+                        <div>
+                            ${imgHtml}
+                            <span class="card-badge">${getCategoryIcon(w.category)} ${escapeHtml(w.category)}</span>
+                            <h3>${escapeHtml(w.title)}</h3>
+                            <p class="preview-text">${escapeHtml(w.desc)}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span>📅 ${militaryDate(w.date)}</span>
+                            ${adminBtns || '<span class="read-more-hint">閱讀全文 ✨</span>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterCategory(cat, event) {
+            window.currentFilter = cat;
+            document.querySelectorAll('.category-buttons .btn-filter').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+            renderWorks();
+        }
+
+        function setViewMode(mode) {
+            window.viewMode = mode;
+            localStorage.setItem('yume_view_mode', mode);
+            const grid = document.getElementById('worksGrid');
+            if (grid) {
+                grid.className = `grid ${mode}`;
+            }
+            ['vm-card', 'vm-compact', 'vm-list'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.classList.toggle('active', mode === `mode-${id.replace('vm-', '')}`);
+                }
+            });
+            renderWorks();
+        }
+
+        function handleSearchInput(e) {
+            window.searchQuery = e.target.value.trim();
+            renderWorks();
+        }
+
+        function handleSortChange(e) {
+            window.sortOrder = e.target.value;
+            renderWorks();
+        }
+
+        function openDetailModal(id) {
+            const work = window.works.find(w => String(w.id) === String(id));
+            if (!work) return;
+
+            document.getElementById('detailCategory').innerHTML = `${getCategoryIcon(work.category)} ${escapeHtml(work.category)}`;
+            
+            const imgEl = document.getElementById('detailImage');
+            if (work.image) {
+                imgEl.src = work.image;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+
+            document.getElementById('detailTitle').textContent = work.title;
+            document.getElementById('detailDate').textContent = militaryDate(work.date);
+            document.getElementById('detailContent').textContent = work.desc;
+
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function openWorkModal(id = null, e = null) {
+            if (e) e.stopPropagation();
+
+            if (id) {
+                const work = window.works.find(w => String(w.id) === String(id));
+                if (!work) return;
+                document.getElementById('workModalTitle').textContent = '✏️ 編輯創作紀錄';
+                document.getElementById('work-edit-id').value = work.id;
+                document.getElementById('work-title').value = work.title;
+                document.getElementById('work-category').value = work.category;
+                document.getElementById('work-image').value = work.image || '';
+                document.getElementById('work-desc').value = work.desc;
+            } else {
+                document.getElementById('workModalTitle').textContent = '🧸 新增創作紀錄';
+                document.getElementById('work-edit-id').value = '';
+                document.getElementById('work-title').value = '';
+                document.getElementById('work-category').value = '短文';
+                document.getElementById('work-image').value = '';
+                document.getElementById('work-desc').value = '';
+            }
+            document.getElementById('workModal').classList.add('active');
+        }
+
+        function handleSaveWork(e) {
+            e.preventDefault();
+            const editId = document.getElementById('work-edit-id').value;
+            const title = document.getElementById('work-title').value.trim();
+            const category = document.getElementById('work-category').value;
+            const image = document.getElementById('work-image').value.trim();
+            const desc = document.getElementById('work-desc').value.trim();
+            const dateStr = new Date().toISOString().split('T')[0];
+
+            const workData = {
+                id: editId ? (isNaN(editId) ? editId : Number(editId)) : Date.now(),
+                title,
+                category,
+                image,
+                desc,
+                date: dateStr
+            };
+
+            if (window.saveWorkToCloud) {
+                window.saveWorkToCloud(workData);
+            } else {
+                if (editId) {
+                    const idx = window.works.findIndex(w => String(w.id) === String(editId));
+                    if (idx !== -1) window.works[idx] = workData;
+                } else {
+                    window.works.push(workData);
+                }
+                window.saveToCloud();
+                renderWorks();
+            }
+
+            closeModal('workModal');
+        }
+
+        function deleteWork(id, e) {
+            if (e) e.stopPropagation();
+            showConfirmModal("確定要刪除這篇作品紀錄嗎？", () => {
+                if (window.deleteWorkFromCloud) {
+                    window.deleteWorkFromCloud(id);
+                } else {
+                    window.works = window.works.filter(w => String(w.id) !== String(id));
+                    window.saveToCloud();
+                    renderWorks();
+                }
+            });
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('active');
+        }
+
+        function showConfirmModal(message, onConfirm) {
+            const modal = document.getElementById('confirmModal');
+            const msgEl = document.getElementById('confirmMessage');
+            const btn = document.getElementById('confirmActionBtn');
+            if (!modal || !msgEl || !btn) return;
+
+            msgEl.textContent = message;
+            btn.onclick = () => {
+                closeModal('confirmModal');
+                if (onConfirm) onConfirm();
+            };
+            modal.classList.add('active');
+        }
+
+        function processFileUpload(inputEl, targetInputId, callback) {
+            if (!inputEl.files || !inputEl.files[0]) return;
+            const file = inputEl.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const targetInput = document.getElementById(targetInputId);
+                if (targetInput) {
+                    targetInput.value = e.target.result;
+                }
+                if (callback) callback();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 頁面初次渲染初始化
+        window.onload = function() {
+            applyThemeColors(window.currentTheme);
+            renderProfile();
+            renderCharSettings();
+            renderCharacters();
+            renderWorks();
+            renderSocials();
+            renderDaysCounter();
+            setViewMode(window.viewMode);
+        };
+    </script>
+</body>
+</html>
